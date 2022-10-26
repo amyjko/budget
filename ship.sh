@@ -1,1 +1,1 @@
-rsync -avz --delete --exclude-from='deploy-excludes' . ajko@ovid.u.washington.edu:~/public_html/budget
+rsync -avz src/ ajko@ovid.u.washington.edu:~/public_html/budget
