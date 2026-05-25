@@ -1,1 +1,0 @@
-rsync -avz src/ ajko@ovid.u.washington.edu:~/public_html/budget

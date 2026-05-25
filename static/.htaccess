@@ -1,0 +1,36 @@
+# Override the parent ~/public_html/.htaccess so /ajko/budget/ resolves to
+# this app's index.html instead of the parent site's index.html.
+
+RewriteEngine On
+RewriteBase /ajko/budget
+
+DirectoryIndex index.html
+
+# Force HTTPS (parent .htaccess also does this, but we re-declare for safety).
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# Redirect explicit /ajko/budget/index.html requests to the canonical bare URL.
+# Legacy v1 home-screen installs hard-coded the index.html path; the v2 SPA
+# router only knows the `/` route, so without this redirect those installs
+# hit SvelteKit's client-side 404 page.
+RewriteRule ^index\.html$ /ajko/budget/ [R=301,L]
+
+# SPA fallback: any request that doesn't map to a real file or directory
+# rewrites to index.html so SvelteKit's client routing can handle it.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*) index.html [L,QSA]
+
+# Hashed assets from SvelteKit can be cached forever.
+<FilesMatch "_app/.*\.(js|css|png|svg|woff2?)$">
+	Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
+
+# Don't cache HTML or the manifest; we want users to see updates promptly.
+<FilesMatch "\.(html|webmanifest)$">
+	Header set Cache-Control "no-cache, must-revalidate"
+</FilesMatch>
+
+# Correct MIME type for the web manifest.
+AddType application/manifest+json .webmanifest

@@ -1,0 +1,27 @@
+{
+	"name": "budget",
+	"version": "2.0.0",
+	"description": "A simple browser-based iOS PWA for tracking discretionary spending.",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"format": "prettier --write .",
+		"ship": "npm run build && rsync -avz --delete build/ ajko@ovid.u.washington.edu:~/public_html/budget/"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/kit": "^2.61.1",
+		"@sveltejs/vite-plugin-svelte": "^7.1.2",
+		"@types/node": "^25.9.1",
+		"prettier": "^3.8.3",
+		"prettier-plugin-svelte": "^4.0.1",
+		"svelte": "^5.55.9",
+		"svelte-check": "^4.4.8",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.14"
+	}
+}
