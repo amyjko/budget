@@ -26,6 +26,16 @@ export function formatDay(day: number, today: Date = new Date()): string {
 	return formatOrdinal(day);
 }
 
+// History stores only the day-of-month, so infer the calendar month from the
+// current billing cycle: days on/after payDate belong to the cycle's start
+// month, earlier days roll into the following month.
+export function formatMonthDay(day: number, today: Date, payDate: number): string {
+	const ref = new Date(today.getFullYear(), today.getMonth(), 1);
+	if (today.getDate() < payDate) ref.setMonth(ref.getMonth() - 1);
+	if (day < payDate) ref.setMonth(ref.getMonth() + 1);
+	return `${ref.getMonth() + 1}/${day}`;
+}
+
 export function daysInBillingMonth(today: Date, payDate: number): number {
 	const ref = new Date(today);
 	if (ref.getDate() >= payDate) {

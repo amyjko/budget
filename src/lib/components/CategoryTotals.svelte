@@ -28,7 +28,7 @@
 	.totals {
 		display: flex;
 		width: 100%;
-		height: 2rem;
+		height: 3rem;
 		gap: 2px;
 		flex-shrink: 0;
 	}
@@ -37,7 +37,7 @@
 		position: relative;
 		border-radius: 25px;
 		min-width: 2px;
-		container-type: inline-size;
+		container-type: size;
 		overflow: visible;
 	}
 
@@ -47,7 +47,8 @@
 		left: 50%;
 		transform: translate(-50%, -50%);
 		color: white;
-		font-size: 0.625rem;
+		font-size: max(9px, 30cqh);
+		line-height: 1;
 		font-weight: bold;
 		white-space: nowrap;
 		pointer-events: none;

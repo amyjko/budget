@@ -94,7 +94,12 @@
 				}}
 			/>
 		{:else}
-			<Chart history={budget.history} onTap={() => (confirmVisible = true)} />
+			<Chart
+				history={budget.history}
+				today={budget.today}
+				payDate={budget.payDate}
+				onTap={() => (confirmVisible = true)}
+			/>
 			<CategoryTotals history={budget.history} />
 		{/if}
 	</section>
@@ -141,6 +146,15 @@
 			max(env(safe-area-inset-left), var(--padding));
 		box-sizing: border-box;
 		gap: var(--padding);
+	}
+
+	/* In an installed PWA there's no browser chrome, so dvh can resolve short of
+	   the physical screen on iOS and leave a black gap below the keypad. vh is
+	   stable and equals the full screen in standalone mode. */
+	@media (display-mode: standalone) {
+		main {
+			height: 100vh;
+		}
 	}
 
 	.top {

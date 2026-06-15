@@ -1,18 +1,25 @@
 <script lang="ts">
 	import type { History } from '$lib/types';
 	import { categoryColors } from '$lib/categories';
-	import { formatMoney, maxSpendingBar, nonIncomeEntries } from '$lib/budget';
+	import { formatMoney, formatMonthDay, maxSpendingBar, nonIncomeEntries } from '$lib/budget';
 
 	type Props = {
 		history: History;
+		today: Date;
+		payDate: number;
 		onTap: () => void;
 	};
 
-	const { history, onTap }: Props = $props();
+	const { history, today, payDate, onTap }: Props = $props();
 
 	const entries = $derived(nonIncomeEntries(history));
 	const max = $derived(maxSpendingBar(history));
 	const widthPct = $derived(entries.length > 0 ? Math.min(10, 90 / entries.length) : 10);
+	const dateLabels = $derived(
+		entries.map((entry, i) =>
+			i === 0 || entry.day !== entries[i - 1].day ? formatMonthDay(entry.day, today, payDate) : ''
+		)
+	);
 </script>
 
 <button class="chart" onclick={onTap} aria-label="Show entry actions">
@@ -21,13 +28,16 @@
 	{:else}
 		{#each entries as entry, i (i)}
 			<div class="bar-col" style:width="calc({widthPct}% - 2px)">
-				<div
-					class="bar"
-					style:background-color={categoryColors[entry.category]}
-					style:height="{max > 0 ? (100 * Math.abs(entry.amount)) / max : 0}%"
-				>
-					<span class="bar-label">${formatMoney(Math.abs(entry.amount))}</span>
+				<div class="bar-area">
+					<div
+						class="bar"
+						style:background-color={categoryColors[entry.category]}
+						style:height="{max > 0 ? (100 * Math.abs(entry.amount)) / max : 0}%"
+					>
+						<span class="bar-label">${formatMoney(Math.abs(entry.amount))}</span>
+					</div>
 				</div>
+				<span class="date-label">{dateLabels[i]}</span>
 			</div>
 		{/each}
 	{/if}
@@ -56,9 +66,31 @@
 		height: 100%;
 		display: flex;
 		flex-direction: column;
-		justify-content: flex-end;
 		position: relative;
 		min-width: 2px;
+		overflow: visible;
+		container-type: inline-size;
+	}
+
+	.bar-area {
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		overflow: visible;
+	}
+
+	.date-label {
+		height: 3rem;
+		align-self: center;
+		margin-top: 4px;
+		writing-mode: vertical-rl;
+		text-orientation: mixed;
+		font-size: max(9px, 30cqw);
+		line-height: 1;
+		color: white;
+		white-space: nowrap;
 		overflow: visible;
 	}
 
@@ -78,7 +110,8 @@
 		writing-mode: vertical-rl;
 		text-orientation: mixed;
 		color: white;
-		font-size: 0.625rem;
+		font-size: max(9px, 30cqw);
+		line-height: 1;
 		font-weight: bold;
 		white-space: nowrap;
 		pointer-events: none;
