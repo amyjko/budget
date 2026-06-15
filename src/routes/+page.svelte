@@ -5,6 +5,7 @@
 	import AmountInput from '$lib/components/AmountInput.svelte';
 	import CategoryButton from '$lib/components/CategoryButton.svelte';
 	import Chart from '$lib/components/Chart.svelte';
+	import CategoryTotals from '$lib/components/CategoryTotals.svelte';
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 	import Keypad from '$lib/components/Keypad.svelte';
 	import RemainingDisplay from '$lib/components/RemainingDisplay.svelte';
@@ -14,6 +15,35 @@
 	let sign = $state<'+' | '-'>('-');
 	let category = $state<Category>('eat');
 	let confirmVisible = $state(false);
+	let pendingReload = $state(false);
+
+	$effect(() => {
+		if (pendingReload && amount === '') location.reload();
+	});
+
+	$effect(() => {
+		if (!('serviceWorker' in navigator)) return;
+
+		const onControllerChange = () => (pendingReload = true);
+		const checkForUpdate = async () => {
+			const reg = await navigator.serviceWorker.getRegistration();
+			await reg?.update();
+		};
+		const onVisibility = () => {
+			if (!document.hidden) checkForUpdate();
+		};
+
+		if (navigator.serviceWorker.controller) {
+			navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
+		}
+		document.addEventListener('visibilitychange', onVisibility);
+		checkForUpdate();
+
+		return () => {
+			navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
+			document.removeEventListener('visibilitychange', onVisibility);
+		};
+	});
 
 	function appendDigit(d: number) {
 		if (amount.length >= 4) return;
@@ -65,6 +95,7 @@
 			/>
 		{:else}
 			<Chart history={budget.history} onTap={() => (confirmVisible = true)} />
+			<CategoryTotals history={budget.history} />
 		{/if}
 	</section>
 
@@ -121,6 +152,14 @@
 
 	.chart-area {
 		min-height: 60px;
+		display: flex;
+		flex-direction: column;
+		gap: var(--padding);
+	}
+
+	.chart-area :global(.chart) {
+		flex: 1;
+		min-height: 0;
 	}
 
 	.entry-row {
@@ -133,5 +172,32 @@
 	.keypad {
 		height: 40vh;
 		min-height: 0;
+	}
+
+	@media (orientation: landscape) {
+		main {
+			grid-template-rows: auto 1fr;
+			grid-template-columns: 1fr 1fr;
+			grid-template-areas:
+				'top entry'
+				'chart keypad';
+		}
+
+		.top {
+			grid-area: top;
+		}
+
+		.chart-area {
+			grid-area: chart;
+		}
+
+		.entry-row {
+			grid-area: entry;
+		}
+
+		.keypad {
+			grid-area: keypad;
+			height: auto;
+		}
 	}
 </style>

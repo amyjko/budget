@@ -14,8 +14,8 @@
 	const display = $derived(amount === '' ? '0' : formatMoney(Number.parseInt(amount, 10)));
 </script>
 
-<button class="amount-input" style:color onclick={onEnter}>
-	{amount === '' ? '' : signChar}${display}
+<button class="amount-input" onclick={onEnter}>
+	<span class="amount" style:color>{amount === '' ? '' : signChar}${display}</span>
 </button>
 
 <style>
@@ -26,7 +26,6 @@
 		margin: 0;
 		font-family: inherit;
 		font-weight: inherit;
-		font-size: clamp(2rem, 22cqi, 5rem);
 		text-align: right;
 		cursor: pointer;
 		touch-action: manipulation;
@@ -35,5 +34,11 @@
 		min-width: 0;
 		container-type: inline-size;
 		overflow: hidden;
+	}
+
+	.amount {
+		font-size: clamp(1.5rem, 22cqi, 5rem);
+		line-height: 1;
+		white-space: nowrap;
 	}
 </style>

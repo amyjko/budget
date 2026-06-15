@@ -1,4 +1,4 @@
-import type { Entry, History } from './types';
+import type { Category, Entry, History } from './types';
 
 export function formatMoney(n: number): string {
 	return n.toLocaleString('en-US');
@@ -71,4 +71,16 @@ export function maxSpendingBar(history: History): number {
 
 export function nonIncomeEntries(history: History): Entry[] {
 	return history.filter((e) => e.category !== 'inc');
+}
+
+export function categoryTotals(history: History): { category: Category; total: number }[] {
+	const sums = new Map<Category, number>();
+	for (const e of history) {
+		if (e.category === 'inc') continue;
+		sums.set(e.category, (sums.get(e.category) ?? 0) + Math.abs(e.amount));
+	}
+	return [...sums.entries()]
+		.map(([category, total]) => ({ category, total }))
+		.filter((t) => t.total > 0)
+		.sort((a, b) => b.total - a.total);
 }
