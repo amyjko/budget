@@ -4,7 +4,7 @@ export const categoryColors: Record<Category, string> = {
 	eat: '#A30000',
 	groc: '#004777',
 	misc: '#FF7700',
-	car: '#EFD28D',
+	health: '#EFD28D',
 	fun: '#00AFB5',
 	inc: '#000000'
 };
@@ -13,7 +13,7 @@ export const categoryLabels: Record<Category, string> = {
 	eat: 'eat',
 	groc: 'groc',
 	misc: 'misc',
-	car: 'car',
+	health: 'health',
 	fun: 'fun',
 	inc: 'inc'
 };

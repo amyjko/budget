@@ -1,4 +1,4 @@
-export type Category = 'eat' | 'groc' | 'misc' | 'car' | 'fun' | 'inc';
+export type Category = 'eat' | 'groc' | 'misc' | 'health' | 'fun' | 'inc';
 
 export type Entry = {
 	day: number;
