@@ -82,9 +82,10 @@
 	}
 
 	.date-label {
-		height: 3rem;
+		height: 2.5em;
 		align-self: center;
-		margin-top: 4px;
+		margin-top: 1em;
+		text-align: start;
 		writing-mode: vertical-rl;
 		text-orientation: mixed;
 		font-size: max(9px, 30cqw);
