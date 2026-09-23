@@ -136,11 +136,12 @@
 
 	main {
 		--padding: 20px;
+		--top-fade-inset: 0px;
 		display: grid;
 		grid-template-rows: auto 1fr auto auto;
 		height: 100vh;
 		height: 100dvh;
-		padding: max(env(safe-area-inset-top), var(--padding))
+		padding: calc(max(env(safe-area-inset-top), var(--padding)) + var(--top-fade-inset))
 			max(env(safe-area-inset-right), var(--padding))
 			max(env(safe-area-inset-bottom), var(--padding))
 			max(env(safe-area-inset-left), var(--padding));
@@ -150,10 +151,17 @@
 
 	/* In an installed PWA there's no browser chrome, so dvh can resolve short of
 	   the physical screen on iOS and leave a black gap below the keypad. vh is
-	   stable and equals the full screen in standalone mode. */
+	   stable and equals the full screen in standalone mode.
+
+	   The top inset clears iOS 26+'s Liquid Glass scroll edge effect, a system
+	   blur painted over the top ~100px of the web view that can't be disabled or
+	   covered from page CSS. Anything inside it renders washed out, so we leave
+	   it empty; it's invisible against the black background. Set to 0px if Apple
+	   ever gives web content a way to opt out. */
 	@media (display-mode: standalone) {
 		main {
 			height: 100vh;
+			--top-fade-inset: 40px;
 		}
 	}
 
