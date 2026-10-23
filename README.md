@@ -1,5 +1,7 @@
 # budget
 
+> **Moved.** This app now lives in [amyjko/amyjko](https://github.com/amyjko/amyjko) and is served at [amyjko.org/budget/](https://amyjko.org/budget/). This repository is archived and keeps the earlier history.
+
 A simple iOS PWA Amy uses to track discretionary spending across a billing cycle.
 
 ## Quick start
